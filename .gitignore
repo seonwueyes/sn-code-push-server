@@ -50,6 +50,8 @@ JsonStorage.json
 *.srl
 *.csr
 
+*.private
+
 
 # - MinIo
 storage-minio/minio-data
