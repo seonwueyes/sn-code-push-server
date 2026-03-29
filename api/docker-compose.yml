@@ -4,7 +4,7 @@ services:
     container_name: codepush-api
     build:
       context: ./
-    image: bgchoi.github.com/codepush/api3
+    image: seonwueyes.github.com/codepush/api:1.0.0
     ports:
       - 3000:3000
     networks:
