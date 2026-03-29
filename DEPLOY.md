@@ -30,7 +30,7 @@ redis/RESTORE.md
 
 ### SeaweedFS 컨테이너 생성 및 실행
 
-SeaweedFS는 AWS S3 형태의 오픈소스라고 생각하면 된다. AWS S3라고 가정하고 개발했기 때문에 여기서는 SeawedFS로 사용한다.
+SeaweedFS는 S3 호환 오브젝트 스토리지로, 로컬 개발/테스트 환경에서 기본 스토리지로 사용한다.
 
 ```
 // PWD : storage-seaweedfs
@@ -39,7 +39,7 @@ docker-compose up -d
 
 ### MinIO 컨테이너 생성 및 실행
 
-MinIO도 AWS S3 형태의 유료 서비스(오픈소스도 일부 제공)라고 생각하면 된다. AWS S3라고 가정하고 개발했기 때문에 여기서는 MinIO로 사용한다.
+MinIO는 S3 호환 오브젝트 스토리지이며, 이 프로젝트에서는 SeaweedFS 대신 선택적으로 사용할 수 있다.
 
 ```
 // PWD : storage-minio
@@ -48,4 +48,48 @@ docker-compose up -d
 
 ### CodePush-API 컨테이너 생성 및 실행
 
-작성중...
+CodePush-API는 컨테이너 내부에서 `pm2` + `node`로 실행된다. GitHub OAuth를 사용하며, 스토리지는 SeaweedFS(S3 호환)에 업로드한다.
+
+1) 환경 변수 준비
+
+`api/.env` 파일을 생성한다.
+
+```
+# Server
+SERVER_URL=http://localhost:3000
+API_PORT=3000
+
+# GitHub OAuth
+GITHUB_CLIENT_ID=YOUR_GITHUB_CLIENT_ID
+GITHUB_CLIENT_SECRET=YOUR_GITHUB_CLIENT_SECRET
+
+# Redis (TLS)
+REDIS_HOST=redis-server
+REDIS_KEY=passw0rd
+CUSTOM_REDIS_TLS_CA=/app/redis-key/ca.crt
+CUSTOM_REDIS_TLS_CRT=/app/redis-key/client.crt
+CUSTOM_REDIS_TLS_KEY=/app/redis-key/client.key
+CUSTOM_REDIS_TLS_SERVERNAME=redis-server
+
+# S3 (SeaweedFS)
+IS_AWS_S3=false
+AWS_ENDPOINT=http://s3:8333
+AWS_EXT_ENDPOINT=http://localhost:8333
+AWS_BUCKET_NAME=codepush
+AWS_ACCESS_KEY_ID=your_access_key
+AWS_SECRET_ACCESS=your_secret_key
+AWS_REGION=us-east-1
+```
+
+2) CodePush-API 컨테이너 실행
+
+```
+// PWD : api
+docker-compose up -d --build
+```
+
+3) 정상 동작 확인
+
+```
+curl -s http://localhost:3000/ | head -n 1
+```
