@@ -20,6 +20,14 @@ docker-compose up -d
 
 redis-client에 컨테이너는 테스트 용도로 만든 것이며 이 컨테이너 안에 들어가서 'connect-cli.sh'의 명령어를 실행해 보면 정상적으로 redis-server에 접속되는 것이 확인할 수 있다.
 
+### Redis 백업/복구
+
+Redis는 RDB 스냅샷 + AOF를 사용한다. 백업/복구 절차는 아래 문서를 참고한다.
+
+```
+redis/RESTORE.md
+```
+
 ### SeaweedFS 컨테이너 생성 및 실행
 
 SeaweedFS는 AWS S3 형태의 오픈소스라고 생각하면 된다. AWS S3라고 가정하고 개발했기 때문에 여기서는 SeawedFS로 사용한다.
